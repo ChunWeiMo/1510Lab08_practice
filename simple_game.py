@@ -2,15 +2,36 @@ import random
 
 
 def make_room():
-    pass
+    room = {0: 'Entrance', 1: 'Poison gas',
+            2: 'Spike trap', 3: 'Spirit fountain', 4: 'Camp fire', 5: 'Empty room'}
+    room_seed = random.randint(1, 4)
+    return room[room_seed]
+
+
+def room_effect(board, location: tuple, character):
+    if board[location] == 'Poison gas':
+        print("You enter a poison chamber. Poison gas has caused 1 damage.")
+        character['Current HP'] -= 1
+    elif board[location] == 'Spike trap':
+        print("You get injured by a spike trap, causing 1 damage.")
+        character['Current HP'] -= 1
+    elif board[location] == 'Spirit fountain':
+        print("You discover a spirit fountain and get spirit blessing, healing 1 HP.")
+        character['Current HP'] += 1
+    elif board[location] == 'Camp fire':
+        print("You have found a camp fire left by previous adventurers and rested for a while, healing 1 HP.")
+        character['Current HP'] += 1
 
 
 def make_board(rows, columns):
     board = dict()
     for row in range(rows):
         for column in range(columns):
-            tuple_template = (row, column)
-            board[tuple_template] = 'Empty room'
+            position = (row, column)
+            room = make_room()
+            if row == 0 and column == 0:
+                room = 0
+            board[position] = room
     return board
 
 
@@ -30,13 +51,22 @@ def make_character():
 
 
 def describe_current_location(board, character):
-    south_wall, east_wall = board_size(board)
+    # south_wall, east_wall = board_size(board)
+    location = (character['X-coordinate'], character['Y-coordinate'])
     print(
         f"You are at X: {character['X-coordinate']}, Y: {character['Y-coordinate']}.")
+    if location == (0, 0):
+        print("You stand at the entrance, start your advance to SE corner.")
     print()
-    if character['X-coordinate'] > east_wall or character['X-coordinate'] < 0 or character['Y-coordinate'] > south_wall or character['Y-coordinate'] < 0:
-        print("!!WARNING!!: Out of the board")
-        print()
+    # if character['X-coordinate'] > east_wall or character['X-coordinate'] < 0 or character['Y-coordinate'] > south_wall or character['Y-coordinate'] < 0:
+    #     print("!!WARNING!!: Out of the board")
+    #     print()
+    return location
+
+
+def describe_current_hp(character):
+    print(f"Your current HP: {character['Current HP']}")
+    print()
 
 
 def get_user_choice():
@@ -123,9 +153,10 @@ def is_alive(character):
 
 
 def game():
-    rows = 9
-    columns = 5
+    rows = 3
+    columns = 3
     board = make_board(rows, columns)
+    print(board)
     south_wall, east_wall = board_size(board)
     print(f"This is a {south_wall} X {east_wall} board.")
     character = make_character()
@@ -137,7 +168,9 @@ def game():
         valid_move = validate_move(board, character, direction)
         if valid_move:
             move_character(character, direction)
-            describe_current_location(board, character)
+            location = describe_current_location(board, character)
+            room_effect(board, location, character)
+            describe_current_hp(character)
     # there_is_a_challenger = check_for_foes()
     # if there_is_a_challenger:
     # guessing_game(character)
@@ -149,7 +182,7 @@ def game():
 
 def main():
     game()
-    # board = make_board(4, 9)
+    # board = make_board(4, 4)
     # print(board)
 
     # character = make_character()
@@ -158,11 +191,14 @@ def main():
     # get_user_choice()
     # print(1 in [0, 1, 2, 3])
     # direction = 3
-    # character = {'X-coordinate': 8, 'Y-coordinate': 3, 'Current HP': 5}
+    # character = {'X-coordinate': 1, 'Y-coordinate': 1, 'Current HP': 5}
     # print(f"direction: {direction}")
     # print(validate_move(board, player, direction))
 
-    # describe_current_location(board, character)
+    # location = describe_current_location(board, character)
+    # print(location)
+    # room_effect(board, location, character)
+    # print(character)
 
     # achieved_goal = False
     # achieved_goal = check_if_goal_attained(board, character, achieved_goal)
