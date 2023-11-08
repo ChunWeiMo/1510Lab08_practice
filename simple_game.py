@@ -8,7 +8,8 @@ def make_room():
     return room[room_seed]
 
 
-def room_effect(board, location: tuple, character):
+def room_effect(board, character):
+    location = (character['X-coordinate'], character['Y-coordinate'])
     if board[location] == 'Poison gas':
         print("You enter a poison chamber. Poison gas has caused 1 damage.")
         character['Current HP'] -= 1
@@ -30,7 +31,7 @@ def make_board(rows, columns):
             position = (row, column)
             room = make_room()
             if row == 0 and column == 0:
-                room = 0
+                room = "Entrance"
             board[position] = room
     return board
 
@@ -50,18 +51,16 @@ def make_character():
     return {'X-coordinate': 0, 'Y-coordinate': 0, 'Current HP': 5}
 
 
-def describe_current_location(board, character):
-    # south_wall, east_wall = board_size(board)
+def describe_current_location(character):
     location = (character['X-coordinate'], character['Y-coordinate'])
-    print(
-        f"You are at X: {character['X-coordinate']}, Y: {character['Y-coordinate']}.")
     if location == (0, 0):
         print("You stand at the entrance, start your advance to SE corner.")
-    print()
+        print()
+    print(
+        f"You are at X: {character['X-coordinate']}, Y: {character['Y-coordinate']}.")
     # if character['X-coordinate'] > east_wall or character['X-coordinate'] < 0 or character['Y-coordinate'] > south_wall or character['Y-coordinate'] < 0:
     #     print("!!WARNING!!: Out of the board")
     #     print()
-    return location
 
 
 def describe_current_hp(character):
@@ -75,6 +74,7 @@ def get_user_choice():
     while True:
         print('The direction you can choose 0: North, 1: East, 2: South, 3: West')
         direction = int(input("Enter a number to choose direction: "))
+        print()
         if direction in direction_list:
             break
         print("Incorrect input, try again.")
@@ -102,7 +102,6 @@ def validate_move(board, character, direction):
     return can_move
 
 
-# move_character(character)
 def move_character(character, direction):
     if direction == 0:
         character["Y-coordinate"] -= 1
@@ -141,43 +140,45 @@ def guessing_game(character):
     if attack == foe_randint:
         print("Nice attack! The foe is killed!")
     else:
-        print("Miss. The foe attack you. You lose 1 HP.")
+        print("Miss. The foe makes a counterattack. You lose 1 HP.")
         character["Current HP"] -= 1
 
 
 def is_alive(character):
     if character["Current HP"] <= 0:
+        print("You dead...")
+        print("Close the game.")
         return False
     else:
         return True
 
 
 def game():
-    rows = 3
-    columns = 3
+    rows = 4
+    columns = 4
     board = make_board(rows, columns)
     print(board)
     south_wall, east_wall = board_size(board)
     print(f"This is a {south_wall} X {east_wall} board.")
     character = make_character()
-    describe_current_location(board, character)
     achieved_goal = False
     while not achieved_goal:
-        # // Tell the user where they are
+        describe_current_location(character)
         direction = get_user_choice()
         valid_move = validate_move(board, character, direction)
         if valid_move:
             move_character(character, direction)
-            location = describe_current_location(board, character)
-            room_effect(board, location, character)
+            room_effect(board, character)
+            if not is_alive(character):
+                break
             describe_current_hp(character)
-    # there_is_a_challenger = check_for_foes()
-    # if there_is_a_challenger:
-    # guessing_game(character)
+        there_is_a_challenger = check_for_foes()
+        if there_is_a_challenger:
+            guessing_game(character)
+            describe_current_hp(character)
+            if not is_alive(character):
+                break
         achieved_goal = check_if_goal_attained(board, character, achieved_goal)
-    # else:
-    # // Tell the user they can’t go in that direction
-    # // Print end of game stuff like congratulations or sorry you died
 
 
 def main():
@@ -199,6 +200,8 @@ def main():
     # print(location)
     # room_effect(board, location, character)
     # print(character)
+
+    # guessing_game(character)
 
     # achieved_goal = False
     # achieved_goal = check_if_goal_attained(board, character, achieved_goal)
