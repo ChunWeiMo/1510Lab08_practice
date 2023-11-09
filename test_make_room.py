@@ -12,25 +12,25 @@ class Test(TestCase):
         self.assertEqual(expected, actual)
 
     @patch('random.randint', return_value=1)
-    def test_make_empty_room(self, _):
+    def test_make_spike_trap(self, _):
         actual = make_room()
         expected = 'Spike trap'
         self.assertEqual(expected, actual)
 
     @patch('random.randint', return_value=2)
-    def test_make_empty_room(self, _):
+    def test_make_poison_gas(self, _):
         actual = make_room()
         expected = 'Poison gas'
         self.assertEqual(expected, actual)
 
     @patch('random.randint', return_value=3)
-    def test_make_empty_room(self, _):
+    def test_make_camp_fire(self, _):
         actual = make_room()
         expected = 'Camp fire'
         self.assertEqual(expected, actual)
 
     @patch('random.randint', return_value=4)
-    def test_make_empty_room(self, _):
+    def test_make_spirit_fountain(self, _):
         actual = make_room()
         expected = 'Spirit fountain'
         self.assertEqual(expected, actual)
