@@ -73,6 +73,7 @@ def make_character():
 
 
 def describe_current_location(character):
+def describe_current_location(character):
     location = (character['X-coordinate'], character['Y-coordinate'])
     if location == (0, 0):
         print("You stand at the entrance, start your advance to SE corner.")
@@ -91,6 +92,7 @@ def get_user_choice():
     while True:
         print('The direction you can choose 0: North, 1: East, 2: South, 3: West')
         direction = int(input("Enter a number to choose direction: "))
+        print()
         print()
         if direction in direction_list:
             break
@@ -150,11 +152,14 @@ def guessing_game(character):
         print("Nice attack! The foe is killed!")
     else:
         print("Miss. The foe makes a counterattack. You lose 1 HP.")
+        print("Miss. The foe makes a counterattack. You lose 1 HP.")
         character["Current HP"] -= 1
 
 
 def is_alive(character):
     if character["Current HP"] <= 0:
+        print("You dead...")
+        print("Close the game.")
         print("You dead...")
         print("Close the game.")
         return False
@@ -171,8 +176,8 @@ def check_if_goal_attained(board, character):
 
 
 def game():
-    rows = 3
-    columns = 3
+    rows = 4
+    columns = 4
     board = make_board(rows, columns)
     print(board)
     south_wall, east_wall = board_size(board)
@@ -181,6 +186,7 @@ def game():
     achieved_goal = False
 
     while not achieved_goal:
+        describe_current_location(character)
         describe_current_location(character)
         direction = get_user_choice()
         valid_move = validate_move(board, character, direction)
