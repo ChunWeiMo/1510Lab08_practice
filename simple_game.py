@@ -7,24 +7,33 @@ import random
 
 def make_room():
     """
-    Return a randon room from 5 kinds fo room.
+    Return a random room from 5 kinds fo room.
 
-    :postcondtion: return a randon room from 5 kinds of room
+    :postcondtion: return a random room from 5 kinds of room
     :return: a string
     """
-    room = {0: 'Empty room',
-            1: 'Spike trap', 2: 'Poison gas', 3: 'Camp fire', 4: 'Spirit fountain'}
+    room = {0: 'Empty room', 1: 'Spike trap',
+            2: 'Poison gas', 3: 'Camp fire', 4: 'Spirit fountain'}
     room_seed = random.randint(0, 4)
     return room[room_seed]
 
 
 def room_effect(board, character):
+    """
+    Calculate character current hp after room effect.
+
+    :param board: a dictionary
+    :param character: a dictionary
+    :precondition:
+    """
     location = (character['X-coordinate'], character['Y-coordinate'])
-    if board[location] == 'Poison gas':
-        print("You enter a poison chamber. Poison gas has caused 1 damage.")
-        character['Current HP'] -= 1
+    if board[location] == 'Empty room':
+        print('You enter a empty room. Keep going.')
     elif board[location] == 'Spike trap':
-        print("You get injured by a spike trap, causing 1 damage.")
+        print('You get injured by a spike trap, causing 1 damage.')
+        character['Current HP'] -= 1
+    elif board[location] == 'Poison gas':
+        print('You enter a poison chamber. Poison gas has caused 1 damage.')
         character['Current HP'] -= 1
     elif board[location] == 'Spirit fountain':
         print("You discover a spirit fountain and get spirit blessing, healing 1 HP.")
@@ -42,6 +51,8 @@ def make_board(rows, columns):
             room = make_room()
             if row == 0 and column == 0:
                 room = "Entrance"
+            if row == rows - 1 and column == columns - 1:
+                room = "Goal"
             board[position] = room
     return board
 
@@ -66,7 +77,8 @@ def describe_current_location(character):
     if location == (0, 0):
         print("You stand at the entrance, start your advance to SE corner.")
         print()
-    print(f"You are at X: {character['X-coordinate']}, Y: {character['Y-coordinate']}.")
+    print(
+        f"You are at X: {character['X-coordinate']}, Y: {character['Y-coordinate']}.")
 
 
 def describe_current_hp(character):
@@ -159,8 +171,8 @@ def check_if_goal_attained(board, character):
 
 
 def game():
-    rows = 4
-    columns = 4
+    rows = 3
+    columns = 3
     board = make_board(rows, columns)
     print(board)
     south_wall, east_wall = board_size(board)
