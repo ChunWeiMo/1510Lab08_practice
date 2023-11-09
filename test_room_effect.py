@@ -72,7 +72,8 @@ class Test(TestCase):
         game_print = mock_output.getvalue()
         character_expected = {'X-coordinate': 0,
                               'Y-coordinate': 1, 'Current HP': 6}
-        expected_output = 'You have found a camp fire left by previous adventurers and rested for a while, healing 1 HP.\n'
+        expected_output = ('You have found a camp fire left by previous adventurers '
+                           'and rested for a while, healing 1 HP.\n')
         self.assertEqual(expected_output, game_print)
         self.assertEqual(character_expected, character)
 
